@@ -19,7 +19,7 @@ public class Address {
     private String phoneNumber;
     private String receiveName;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey)
     @JsonIgnore
     private User user;

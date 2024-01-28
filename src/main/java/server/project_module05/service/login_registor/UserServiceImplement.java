@@ -1,4 +1,4 @@
-package server.project_module05.service.login_registor.implement;
+package server.project_module05.service.login_registor;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -91,6 +91,7 @@ public class UserServiceImplement implements IUserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(true);
         user.setCreateAt(new Date());
+        user.setUpdateAt(new Date());
         userRepository.save(user);
     }
 }

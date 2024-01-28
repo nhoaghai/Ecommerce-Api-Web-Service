@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.project_module05.model.dto.request.login_register.SignInRequest;
 import server.project_module05.model.dto.request.login_register.SignUpRequest;
-import server.project_module05.service.login_registor.implement.UserServiceImplement;
+import server.project_module05.service.login_registor.UserServiceImplement;
 
 @RestController
 @RequiredArgsConstructor
