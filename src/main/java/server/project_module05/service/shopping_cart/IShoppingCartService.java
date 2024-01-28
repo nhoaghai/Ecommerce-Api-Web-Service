@@ -1,6 +1,7 @@
 package server.project_module05.service.shopping_cart;
 
 import org.springframework.stereotype.Service;
+import server.project_module05.model.dto.request.shopping_cart.QuantityChangeRequest;
 import server.project_module05.model.dto.request.shopping_cart.ShoppingCartRequest;
 import server.project_module05.model.dto.response.shopping_cart.ShoppingCartResponse;
 
@@ -11,4 +12,7 @@ import java.util.List;
 public interface IShoppingCartService {
     List<ShoppingCartResponse> getAllShoppingCart();
     ShoppingCartResponse addNewShoppingCart(ShoppingCartRequest shoppingCartRequest);
+    ShoppingCartResponse changeOrderQuantity(Long productId,QuantityChangeRequest quantityChangeRequest);
+
+    void deleteProduct(Long productId) throws Exception;
 }

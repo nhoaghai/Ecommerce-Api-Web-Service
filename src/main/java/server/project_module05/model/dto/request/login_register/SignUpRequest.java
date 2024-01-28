@@ -1,5 +1,6 @@
 package server.project_module05.model.dto.request.login_register;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class SignUpRequest {
     private String password;
     private String cfPassword;
     private String fullName;
+    @Email
     private String email;
     private String phone;
     private String address;

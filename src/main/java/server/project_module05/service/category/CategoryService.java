@@ -1,4 +1,4 @@
-package server.project_module05.service.category.implement;
+package server.project_module05.service.category;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
