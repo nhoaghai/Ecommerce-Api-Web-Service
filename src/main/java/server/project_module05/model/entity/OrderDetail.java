@@ -12,14 +12,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class OrderDetail implements Serializable {
 
-    @Id
-    @Column(name = "order_id")
-    private Long orderId;
-    @Id
-    @Column(name = "product_id")
-    private Long product_id;
+
+    @EmbeddedId
+    private OrderDetailId id;
+
     private String name;
     @Column(precision = 10, scale = 2)
     private BigDecimal unitPrice;
