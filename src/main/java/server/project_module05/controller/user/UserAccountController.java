@@ -19,7 +19,7 @@ public class UserAccountController {
     }
 
     @PutMapping
-    public ResponseEntity<?> handleChangeProfileDetail(@RequestBody ChangeProfileDetailRequest changeProfileDetailRequest){
+    public ResponseEntity<?> handleChangeProfileDetail(@ModelAttribute ChangeProfileDetailRequest changeProfileDetailRequest){
         return ResponseEntity.ok().body(accountService.changeUserProfileDetail(changeProfileDetailRequest));
     }
 

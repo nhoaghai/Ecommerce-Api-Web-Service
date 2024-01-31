@@ -12,6 +12,7 @@ import server.project_module05.model.dto.response.account.AccountResponse;
 import server.project_module05.model.entity.User;
 import server.project_module05.repository.IAccountRepository;
 import server.project_module05.security.principle.UserDetail;
+import server.project_module05.service.UploadService;
 
 import java.util.Date;
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class AccountService implements IAccountService {
     private final IAccountRepository accountRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UploadService uploadService;
 
     @Override
     public AccountResponse findByUserId() {
@@ -40,6 +42,7 @@ public class AccountService implements IAccountService {
         user.setEmail(changeProfileDetailRequest.getEmail());
         user.setPhone(changeProfileDetailRequest.getPhone());
         user.setAddress(changeProfileDetailRequest.getAddress());
+        user.setAvatarImgUrl(uploadService.uploadFile(changeProfileDetailRequest.getAvatarImg()));
         user.setUpdateAt(new Date());
         accountRepository.save(user);
         return modelMapper.map(user, AccountResponse.class);

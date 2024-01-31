@@ -27,12 +27,18 @@ public class ShoppingCartController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<ShoppingCartResponse> handleChangeOrderQuantity(@PathVariable Long productId, QuantityChangeRequest quantityChangeRequest){
+    public ResponseEntity<ShoppingCartResponse> handleChangeOrderQuantity(@PathVariable Long productId, @RequestBody QuantityChangeRequest quantityChangeRequest){
         return ResponseEntity.ok().body(shoppingCartService.changeOrderQuantity(productId, quantityChangeRequest));
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ShoppingCartResponse> handleDeleteProduct(@PathVariable Long productId){
-        return null;
+    public ResponseEntity<?> handleDeleteProduct(@PathVariable Long productId){
+        shoppingCartService.deleteProduct(productId);
+        return ResponseEntity.ok("Delete successfully");
+    }
+    @DeleteMapping
+    public ResponseEntity<?> handleDeleteAllCart(){
+        shoppingCartService.deleteAllCart();
+        return ResponseEntity.ok("Delete successfully");
     }
 }

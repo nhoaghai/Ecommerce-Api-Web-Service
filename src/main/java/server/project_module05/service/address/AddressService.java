@@ -1,24 +1,28 @@
 package server.project_module05.service.address;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import server.project_module05.model.dto.request.address.AddressRequest;
 import server.project_module05.model.dto.response.address.AddressResponse;
 import server.project_module05.model.entity.Address;
+import server.project_module05.model.entity.User;
 import server.project_module05.repository.IAddressRepository;
 import server.project_module05.repository.IUserRepository;
 import server.project_module05.security.principle.UserDetail;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class AddressService implements IAddressService{
+public class AddressService implements IAddressService {
     private final IAddressRepository addressRepository;
     private final IUserRepository userRepository;
     private final ModelMapper modelMapper;
-    private final EntityManager entityManager;
 
     @Override
     public AddressResponse addNewAddress(AddressRequest addressRequest) {
@@ -35,12 +39,30 @@ public class AddressService implements IAddressService{
     @Override
     public void deleteAddressById(Long addressId) {
         UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Address address = addressRepository.findByAddressIdAndUser(addressId, userRepository.findByUserId(userDetail.getId()));
-
-        if (address == null){
+        Boolean isAddressExist = addressRepository.existsByAddressIdAndUser(addressId, userRepository.findById(userDetail.getId()));
+        if (!isAddressExist) {
             throw new RuntimeException("Could not find address");
+        } else {
+            addressRepository.deleteById(addressId);
         }
-        addressRepository.delete(address);
     }
 
+    @Override
+    public List<AddressResponse> getAllAddressOfUser() {
+        UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return addressRepository.findAllByUser(userRepository.findByUserId(userDetail.getId())).stream()
+                .map(address -> modelMapper.map(address, AddressResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public AddressResponse getAddressByAddressId(Long addressId) {
+        UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Boolean isAddressExist = addressRepository.existsByAddressIdAndUser(addressId, userRepository.findById(userDetail.getId()));
+        if (!isAddressExist) {
+            throw new RuntimeException("Could not find address");
+        }else {
+            return modelMapper.map(addressRepository.findById(addressId),AddressResponse.class);
+        }
+    }
 }

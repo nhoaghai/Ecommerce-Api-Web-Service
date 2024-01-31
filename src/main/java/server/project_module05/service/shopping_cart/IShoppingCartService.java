@@ -13,6 +13,6 @@ public interface IShoppingCartService {
     List<ShoppingCartResponse> getAllShoppingCart();
     ShoppingCartResponse addNewShoppingCart(ShoppingCartRequest shoppingCartRequest);
     ShoppingCartResponse changeOrderQuantity(Long productId,QuantityChangeRequest quantityChangeRequest);
-
-    void deleteProduct(Long productId) throws Exception;
+    void deleteProduct(Long productId);
+    void deleteAllCart();
 }

@@ -13,5 +13,5 @@ public class ChangeProfileDetailRequest {
     private String email;
     private String phone;
     private String address;
-//    private MultipartFile multipartFile;
+    private MultipartFile avatarImg;
 }

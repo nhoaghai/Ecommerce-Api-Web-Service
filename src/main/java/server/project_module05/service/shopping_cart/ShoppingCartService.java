@@ -105,16 +105,28 @@ public class ShoppingCartService implements IShoppingCartService {
     }
 
     @Override
-    public void deleteProduct(Long productId) throws Exception {
+    public void deleteProduct(Long productId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetail userDetail = (UserDetail) authentication.getPrincipal();
 
         ShoppingCart isShoppingCartExits = shoppingCartRepository.findByUserAndProduct(userRepository.findByUserId(userDetail.getId()), productRepository.findByProductId(productId));
-        try {
+        if (isShoppingCartExits != null){
             shoppingCartRepository.delete(isShoppingCartExits);
             log("Delete successfully!");
-        }catch (Exception e){
-            throw new Exception("Not found id");
+        }else{
+            throw new RuntimeException("Not found id");
+        }
+    }
+
+    @Override
+    public void deleteAllCart() {
+        UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUserUserId(userDetail.getId());
+        if (shoppingCarts != null) {
+            shoppingCartRepository.deleteAll(shoppingCarts);
+        }
+        else {
+            throw new RuntimeException("Could not find carts");
         }
     }
 }
