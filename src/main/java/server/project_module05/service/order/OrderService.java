@@ -17,53 +17,44 @@ import server.project_module05.repository.IUserRepository;
 import server.project_module05.security.principle.UserDetail;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService implements IOrderService{
-    private final IOrderRepository orderRepository;
-    private final IOrderDetailRepository orderDetailRepository;
-    private final IUserRepository userRepository;
-    private final IProductRepository productRepository;
-    private final ModelMapper modelMapper;
 
+    private final IUserRepository userRepository;
+    private final IOrderRepository orderRepository;
+    private final ModelMapper modelMapper;
+    private final IOrderDetailRepository orderDetailRepository;
+    private final IProductRepository productRepository;
     @Override
     public List<OrderResponse> getAllOrder() {
         UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Order> orders = orderRepository.findByUser(userRepository.findByUserId(userDetail.getId()));
-        if (orders == null){
-            throw new RuntimeException("Could not find order");
+        List<Order> orders = orderRepository.findAllByUser(userRepository.findByUserId(userDetail.getId()));
+        if (orders == null) {
+            throw new RuntimeException("Could not find orders");
         }
-        return orders.stream().map(order -> modelMapper.map(order,OrderResponse.class)).collect(Collectors.toList());
+        return orders.stream().map(order -> modelMapper.map(order, OrderResponse.class)).collect(Collectors.toList());
     }
 
     @Override
     public OrderDetailResponse getOrderDetailBySerialNumber(String serialNumber) {
         UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Boolean isOrderExits = orderRepository.existsByUser(userRepository.findByUserId(userDetail.getId()));
-        if (!isOrderExits){
-            throw new RuntimeException("Order is not exits");
-        }else{
-            Order order = orderRepository.findBySerialNumber(serialNumber);
-            List<OrderDetail> orderDetails = orderDetailRepository.findByOrder(order);
-            List<Product> products = new ArrayList<>();
-            for (OrderDetail detail : orderDetails) {
-                Long productId = detail.getProduct().getProductId();
-                products.add(productRepository.findByProductId(productId));
-            }
-            List<ProductResponse> listItem = products.stream()
-                    .map(pro -> modelMapper.map(pro, ProductResponse.class))
-                    .toList();
-            OrderDetailResponse orderResponse = modelMapper.map(order, OrderDetailResponse.class);
-            Calendar receiveAt = Calendar.getInstance();
-            receiveAt.add(Calendar.DATE,3);
-            orderResponse.setReceiveAt(receiveAt);
-            orderResponse.setListItem(listItem);
-            return orderResponse;
+        Order order = orderRepository.findBySerialNumberAndUser(serialNumber, userRepository.findByUserId(userDetail.getId()));
+        if(order == null){
+            throw new RuntimeException("Could not find order");
         }
+        OrderDetailResponse orderDetailResponse = modelMapper.map(order, OrderDetailResponse.class);
+        List<OrderDetail> orderDetail = orderDetailRepository.findAllByOrder(order);
+        List<Product> productList = new ArrayList<>();
+        for (OrderDetail detail : orderDetail) {
+            Product product = productRepository.findByProductId(detail.getProduct().getProductId());
+            productList.add(product);
+        }
+        List<ProductResponse> productResponses = productList.stream().map(product -> modelMapper.map(product, ProductResponse.class)).toList();
+        orderDetailResponse.setListItem(productResponses);
+        return orderDetailResponse;
     }
 }

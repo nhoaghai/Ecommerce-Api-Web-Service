@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface IOrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByUser(User user);
-    Order findBySerialNumber(String serialNumber);
-    Boolean existsByUser(User user);
+    List<Order> findAllByUser(User user);
+    Order findBySerialNumberAndUser(String serialNumber, User user);
 }

@@ -61,3 +61,13 @@ VALUES ('Cappuccino', '3', 21000, 1, 1),
        ('Latte', '1', 25000, 1, 2),
        ('Ramen', '1', 38000, 3, 2),
        ('Udon', '3', 22000, 4, 2);
+
+insert into wishlist(product_id, user_id)
+value (1, 1),
+    (2, 1),
+     (3, 1),
+     (4, 1),
+     (5, 2),
+     (6, 2),
+     (7, 2),
+     (8, 2)
