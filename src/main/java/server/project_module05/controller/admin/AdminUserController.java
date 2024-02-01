@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.project_module05.model.dto.response.account.AccountResponse;
 import server.project_module05.model.dto.response.page.PageResponse;
+import server.project_module05.model.dto.response.user_role.UserRoleResponse;
 import server.project_module05.service.admin.IAdminUserService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +28,10 @@ public class AdminUserController {
     @GetMapping("/search")
     public ResponseEntity<PageResponse<AccountResponse>> findUserByName(@RequestHeader String search, Pageable pageable){
         return ResponseEntity.ok().body(adminUserService.findByUserName(search,pageable));
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<UserRoleResponse>> findAllRole(){
+        return ResponseEntity.ok(adminUserService.getUserRole());
     }
 }

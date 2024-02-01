@@ -4,17 +4,21 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import server.project_module05.model.dto.response.account.AccountResponse;
 import server.project_module05.model.dto.response.page.PageResponse;
-import server.project_module05.model.dto.response.product.ProductResponse;
 import server.project_module05.model.dto.response.user_role.UserRoleResponse;
-import server.project_module05.model.entity.Product;
+import server.project_module05.model.entity.Role;
 import server.project_module05.model.entity.User;
+import server.project_module05.repository.IRoleRepository;
 import server.project_module05.repository.IUserRepository;
+import server.project_module05.security.principle.UserDetail;
 import server.project_module05.service.admin.IAdminUserService;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +51,14 @@ public class AdminUserService implements IAdminUserService {
 
     @Override
     public List<UserRoleResponse> getUserRole() {
-        return null;
+        UserDetail userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<Role> roles = userRepository.findByUserId(userDetail.getId()).getRoles();
+        return roles.stream()
+                .map(role -> modelMapper.map(role, UserRoleResponse.class))
+                .toList()
+                .stream()
+                .sorted(Comparator.comparing(UserRoleResponse::getRoleId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -65,6 +76,8 @@ public class AdminUserService implements IAdminUserService {
         pageResponse.setSort(searchResult.getSort().toString());
         return pageResponse;
     }
+
+
 
 
 }
