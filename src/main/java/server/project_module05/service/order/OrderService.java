@@ -17,6 +17,8 @@ import server.project_module05.repository.IUserRepository;
 import server.project_module05.security.principle.UserDetail;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,9 @@ public class OrderService implements IOrderService{
                     .map(pro -> modelMapper.map(pro, ProductResponse.class))
                     .toList();
             OrderDetailResponse orderResponse = modelMapper.map(order, OrderDetailResponse.class);
+            Calendar receiveAt = Calendar.getInstance();
+            receiveAt.add(Calendar.DATE,3);
+            orderResponse.setReceiveAt(receiveAt);
             orderResponse.setListItem(listItem);
             return orderResponse;
         }

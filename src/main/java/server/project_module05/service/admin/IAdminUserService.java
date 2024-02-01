@@ -14,4 +14,5 @@ public interface IAdminUserService {
     PageResponse<AccountResponse> getAllUser(Pageable pageable);
     void toggleUserStatus(Long userId);
     List<UserRoleResponse> getUserRole();
+    PageResponse<AccountResponse> findByUserName(String keyword, Pageable pageable);
 }

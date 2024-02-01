@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.project_module05.model.dto.response.order.OrderDetailResponse;
+import server.project_module05.model.dto.response.order.OrderResponse;
 import server.project_module05.service.order.IOrderService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,6 +18,10 @@ import server.project_module05.service.order.IOrderService;
 public class OrderController {
     private final IOrderService orderService;
 
+    @GetMapping
+    public ResponseEntity<List<OrderResponse>> getAllOrder(){
+        return ResponseEntity.ok().body(orderService.getAllOrder());
+    }
     @GetMapping("/{serialNumber}")
     public ResponseEntity<OrderDetailResponse> handleOrderDetail(@PathVariable String serialNumber){
         return ResponseEntity.ok(orderService.getOrderDetailBySerialNumber(serialNumber));

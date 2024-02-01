@@ -10,7 +10,7 @@ import server.project_module05.service.admin.IAdminUserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api.myservice.com/v1/admin/user")
+@RequestMapping("/api.myservice.com/v1/admin/users")
 public class AdminUserController {
     private final IAdminUserService adminUserService;
     @GetMapping
@@ -20,6 +20,10 @@ public class AdminUserController {
     @PutMapping("/{userId}")
     public ResponseEntity<?> toggleUserStatus(@PathVariable Long userId){
         adminUserService.toggleUserStatus(userId);
-        return ResponseEntity.ok("Delete successfully");
+        return ResponseEntity.ok("Block/UnBlock user successfully");
+    }
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<AccountResponse>> findUserByName(@RequestHeader String search, Pageable pageable){
+        return ResponseEntity.ok().body(adminUserService.findByUserName(search,pageable));
     }
 }

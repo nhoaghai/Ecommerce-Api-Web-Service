@@ -15,6 +15,7 @@ import server.project_module05.repository.IUserRepository;
 import server.project_module05.service.admin.IAdminUserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,4 +49,22 @@ public class AdminUserService implements IAdminUserService {
     public List<UserRoleResponse> getUserRole() {
         return null;
     }
+
+    @Override
+    public PageResponse<AccountResponse> findByUserName(String keyword, Pageable pageable) {
+        Page<User> searchResult = userRepository.findAllByUserNameContainingOrFullNameContaining(keyword,keyword,pageable);
+        if (searchResult.getContent().isEmpty()){
+            throw new RuntimeException("Could not find any user matching");
+        }
+        List<AccountResponse> data = searchResult.stream().map(user -> modelMapper.map(user, AccountResponse.class)).toList();
+        PageResponse<AccountResponse> pageResponse = new PageResponse<>();
+        pageResponse.setData(data);
+        pageResponse.setTotalPages(searchResult.getTotalPages());
+        pageResponse.setPageNumber(searchResult.getNumber());
+        pageResponse.setSize(searchResult.getSize());
+        pageResponse.setSort(searchResult.getSort().toString());
+        return pageResponse;
+    }
+
+
 }
